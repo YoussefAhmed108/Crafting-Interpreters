@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug Lox",
+      "request": "launch",
+      // Fully qualified name of your main class:
+      "mainClass": "Lox",
+      // If Lox is in a package, e.g. com.craftinginterpreters.lox.Lox, use that here.
+      "projectName": "",        // usually VS Code can infer this—leave blank if unsure
+      "args": ["test.lox"]      // pass your .lox filename here
+    }
+  ]
+}

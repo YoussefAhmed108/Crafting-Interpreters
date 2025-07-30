@@ -1,0 +1,12 @@
+class Bacon {
+    eat(a) {
+        print a;
+        print "Crunch Crunch Crunch it's";
+        print this.taste;
+    }
+}
+
+var a = "Bacon";
+var b = Bacon();
+b.taste = "delicious";
+b.eat(a);
