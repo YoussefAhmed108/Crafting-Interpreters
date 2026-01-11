@@ -1,7 +1,7 @@
 #include "scanner.h"
 #include "common.h"
 #include "stdio.h"
-#include <string.h>
+#include "string.h"
 
 typedef struct {
   const char *start;
@@ -172,16 +172,36 @@ static Token number() {
 }
 
 static Token string() {
+  bool isLiteral = false;
   while (peek() != '"' && !isAtEnd()) {
     if (peek() == '\n')
       scanner.line++;
-    advance();
+    if (peek() == '$' && peekNext() == '{') {
+      isLiteral = true;
+      advance(); // consume $
+      advance(); // consume {
+      // scanner.start = scanner.current; // to not include the ${ in token
+      if (isAlpha(peek())) {
+        while (peek() != '}' && (isAlpha(peek()) || isDigit(peek()))) {
+          advance();
+        }
+        // makeToken(identifierType());
+
+        advance(); // cosnsume // }
+        // scanner.start = scanner.current; // to not include the } in the token
+      }
+    } else {
+      advance();
+    }
   }
   if (isAtEnd())
     return errorToken("Unterminated string");
 
   // Consume the closing quote
   advance();
+  if (isLiteral) {
+    return makeToken(TOKEN_STRING_LITERAL);
+  }
   return makeToken(TOKEN_STRING);
 }
 
@@ -226,8 +246,7 @@ Token scanToken() {
   case '=':
     return match('=') ? makeToken(TOKEN_EQUAL_EQUAL) : makeToken(TOKEN_EQUAL);
   case '"':
-    string();
-    break;
+    return string();
   case '<':
     return match('=') ? makeToken(TOKEN_LESS_EQUAL) : makeToken(TOKEN_LESS);
   case '>':
